@@ -30,8 +30,10 @@ Project Setup
 
 ### 1\. Clone the repository
 
-`git clone https://github.com/your-username/your-repo.git
-cd your-repo`
+`git clone https://github.com/your-username/your-repo.git`
+
+
+`cd your-repo`
 
 ### 2\. Install dependencies
 
@@ -47,20 +49,7 @@ Then open your browser and go to:
 
 * * * * *
 
-Build for Production
-------------------------
-
-`npm run build`
-
-The optimized static files will be generated in the `dist/` folder.
-
-You can preview the production build locally using:
-
-`npm run preview`
-
-* * * * *
-
-🐳 Running with Docker
+Running with Docker
 ----------------------
 
 ### Build the image
@@ -94,11 +83,9 @@ If your app uses environment variables (like API URLs), create a `.env` file in 
 
 `VITE_API_URL=https://your-api-url.com`
 
-Access them in your code with:
+Access them in the code with:
 
 `import.meta.env.VITE_API_URL`
-
-* * * * *
 
 * * * * *
 Deployment

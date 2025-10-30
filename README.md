@@ -1,73 +1,117 @@
-# React + TypeScript + Vite
+Talentloom - Hackathon Project Setup
+===========================
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains the frontend for the application, built using **Vite**, **React 19**, **TypeScript**, and **TailwindCSS**.\
+It's fast, modular, and optimized for production deployment with Docker.
 
-Currently, two official plugins are available:
+* * * * *
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Tech Stack
+-------------
 
-## React Compiler
+-   **Vite** --- lightning-fast build tool
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **React 19** --- modern UI library
 
-## Expanding the ESLint configuration
+-   **TypeScript** --- static typing for cleaner code
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+-   **TailwindCSS** --- utility-first CSS framework
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+-   **Redux Toolkit** --- predictable state management
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+-   **React Router v7** --- client-side routing
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+-   **Axios** --- for API communication
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+* * * * *
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Project Setup
+----------------
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 1\. Clone the repository
+
+`git clone https://github.com/your-username/your-repo.git
+cd your-repo`
+
+### 2\. Install dependencies
+
+`npm install`
+
+### 3\. Run the development server
+
+`npm run dev`
+
+Then open your browser and go to:
+
+`http://localhost:5173`
+
+* * * * *
+
+Build for Production
+------------------------
+
+`npm run build`
+
+The optimized static files will be generated in the `dist/` folder.
+
+You can preview the production build locally using:
+
+`npm run preview`
+
+* * * * *
+
+🐳 Running with Docker
+----------------------
+
+### Build the image
+
+`docker build -t vite-frontend .`
+
+### Run the container
+
+`docker run -p 4173:4173 vite-frontend`
+
+Now your app will be available at:
+
+`http://localhost:4173`
+
+* * * * *
+
+Useful Commands
+------------------
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start development server |
+| `npm run build` | Build production files |
+
+* * * * *
+
+Environment Variables
+------------------------
+
+If your app uses environment variables (like API URLs), create a `.env` file in the root:
+
+`VITE_API_URL=https://your-api-url.com`
+
+Access them in your code with:
+
+`import.meta.env.VITE_API_URL`
+
+* * * * *
+
+* * * * *
+Deployment
+-------------
+
+The Dockerfile included builds and serves the app using `serve` on port `4173`.\
+This is ideal for deploying on platforms like **Vercel**, **Render**, **AWS**, or **Docker Hub**.
+
+* * * * *
+
+Author
+------------
+
+**Prince Chaurasia**\
+Full Stack Developer - React | Next.js | TypeScript | Node.js\
+[LinkedIn](https://linkedin.com/in/princechaurasia) | [GitHub](https://github.com/mr-dev-prince)

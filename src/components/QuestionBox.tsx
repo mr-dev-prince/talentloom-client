@@ -6,7 +6,7 @@ import type { AppDispatch, RootState } from "../redux/store";
 
 const QuestionBox: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { discussions, loading, error } = useSelector(
+  const { discussions, error } = useSelector(
     (state: RootState) => state.discussion
   );
 
@@ -15,13 +15,6 @@ const QuestionBox: React.FC = () => {
   useEffect(() => {
     dispatch(getDiscussions());
   }, [dispatch]);
-
-  if (loading)
-    return (
-      <div className="text-center text-gray-600 mt-10">
-        Loading discussions...
-      </div>
-    );
 
   if (error)
     return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
@@ -36,7 +29,7 @@ const QuestionBox: React.FC = () => {
   return (
     <div className="p-2 h-fit space-y-4 w-full">
       {discussions.map((discussion) => (
-        <Questions key={discussion._id} {...discussion} />
+        <Questions key={discussion._id} discussion={discussion} />
       ))}
     </div>
   );

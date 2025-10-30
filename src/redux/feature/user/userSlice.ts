@@ -1,15 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, registerUser } from "./userThunk";
+import { fetchCurrentUser, loginUser, registerUser } from "./userThunk";
 
 interface UserState {
   user: any | null;
   loading: boolean;
+  token: string | null;
   error: string | null;
 }
 
 const initialState: UserState = {
   user: null,
   loading: false,
+  token: localStorage.getItem("token"),
   error: null,
 };
 
@@ -31,6 +33,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
+        console.log("login payload--->", action.payload);
         state.user = action.payload.user;
         localStorage.setItem("token", action.payload.token);
       })
@@ -52,6 +55,22 @@ const userSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      // fetch current user
+      .addCase(fetchCurrentUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        console.log("fetchuser payload--->", action.payload);
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchCurrentUser.rejected, (state) => {
+        state.user = null;
+        state.token = null;
+        state.loading = false;
+        localStorage.removeItem("token");
       });
   },
 });

@@ -1,8 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:8000"; // change as per backend
-
 export const loginUser = createAsyncThunk(
   "user/login",
   async (
@@ -10,11 +8,33 @@ export const loginUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        { email, password }
+      );
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Login failed. Try again."
+      );
+    }
+  }
+);
+
+export const fetchCurrentUser = createAsyncThunk(
+  "user/fetchCurrentUser",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/auth/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return response.data.user; // or adjust based on your API response
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user"
       );
     }
   }
@@ -39,13 +59,16 @@ export const registerUser = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await axios.post(`${API_URL}/auth/register`, {
-        name,
-        email,
-        password,
-        dob,
-        bio,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/register`,
+        {
+          name,
+          email,
+          password,
+          dob,
+          bio,
+        }
+      );
       return res.data;
     } catch (error: any) {
       return rejectWithValue(

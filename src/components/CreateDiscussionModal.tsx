@@ -10,6 +10,8 @@ const CreateDiscussionModal: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const { loading } = useSelector((state: RootState) => state.discussion);
 
+  console.log("users---->", user);
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isPublic, setIsPublic] = useState<boolean>(false);
@@ -42,7 +44,6 @@ const CreateDiscussionModal: React.FC = () => {
   return (
     <div className="fixed inset-0 h-full w-full border flex justify-center items-center backdrop-blur-xs">
       <div className="bg-gray-200 h-[60%] w-[50%] rounded-2xl shadow-lg p-6 flex flex-col gap-4 relative">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="border p-2 rounded-full">
@@ -64,8 +65,6 @@ const CreateDiscussionModal: React.FC = () => {
             ✕
           </button>
         </div>
-
-        {/* Form */}
         <form className="flex flex-col gap-5 flex-1" onSubmit={handleSubmit}>
           <input
             type="text"
@@ -80,8 +79,6 @@ const CreateDiscussionModal: React.FC = () => {
             placeholder="Write your thoughts..."
             className="p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 flex-1 resize-none"
           />
-
-          {/* Visibility Toggle */}
           <div className="flex items-center justify-between">
             <span className="text-gray-700 font-medium">Visibility</span>
             <label className="flex items-center cursor-pointer">
@@ -102,8 +99,6 @@ const CreateDiscussionModal: React.FC = () => {
               <span className="ml-2 text-sm text-gray-700">Public</span>
             </label>
           </div>
-
-          {/* Buttons */}
           <div className="flex justify-end gap-3 mt-auto">
             <button
               onClick={handleCloseNewDiscussion}

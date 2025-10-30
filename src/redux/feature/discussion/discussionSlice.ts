@@ -1,7 +1,11 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import axios from "axios";
 
-// ✅ Discussion type
 export interface Discussion {
   _id: string;
   userId: string;
@@ -13,7 +17,6 @@ export interface Discussion {
   updatedAt: string;
 }
 
-// ✅ Redux state type
 interface DiscussionState {
   discussions: Discussion[];
   discussion: Discussion | null;
@@ -22,7 +25,6 @@ interface DiscussionState {
   sortBy: "upvotes" | "date";
 }
 
-// ✅ Initial state
 const initialState: DiscussionState = {
   discussions: [],
   discussion: null,
@@ -31,7 +33,53 @@ const initialState: DiscussionState = {
   sortBy: "date",
 };
 
-// ✅ Create Discussion
+export const createComment = createAsyncThunk<
+  Comment,
+  { discussionId: string; content: string },
+  { rejectValue: string }
+>(
+  "discussion/createComment",
+  async ({ discussionId, content }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/comment`,
+        { discussionId, content },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return res.data.comment;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create comment"
+      );
+    }
+  }
+);
+
+export const toggleUpvote = createAsyncThunk<
+  { discussionId: string; upvotes: number; hasUpvoted: boolean },
+  { discussionId: string },
+  { rejectValue: string }
+>("discussion/toggleUpvote", async ({ discussionId }, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/upvote`,
+      { discussionId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return res.data;
+  } catch (error: any) {
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to toggle upvote"
+    );
+  }
+});
+
 export const createDiscussion = createAsyncThunk(
   "discussion/createDiscussion",
   async (
@@ -62,7 +110,6 @@ export const createDiscussion = createAsyncThunk(
   }
 );
 
-// ✅ Get all discussions
 export const getDiscussions = createAsyncThunk(
   "discussion/getDiscussions",
   async (_, { rejectWithValue }) => {
@@ -77,7 +124,6 @@ export const getDiscussions = createAsyncThunk(
   }
 );
 
-// ✅ Get single discussion by ID
 export const getDiscussionById = createAsyncThunk(
   "discussion/getDiscussionById",
   async (id: string, { rejectWithValue }) => {
@@ -100,8 +146,6 @@ const discussionSlice = createSlice({
   reducers: {
     setSortBy: (state, action: PayloadAction<"upvotes" | "date">) => {
       state.sortBy = action.payload;
-
-      // Sorting logic
       if (state.sortBy === "upvotes") {
         state.discussions = [...state.discussions].sort(
           (a, b) => b.upvotes - a.upvotes
@@ -116,7 +160,6 @@ const discussionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Create Discussion
       .addCase(createDiscussion.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -130,7 +173,6 @@ const discussionSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Get all discussions
       .addCase(getDiscussions.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -144,7 +186,6 @@ const discussionSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Get single discussion
       .addCase(getDiscussionById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -156,6 +197,44 @@ const discussionSlice = createSlice({
       .addCase(getDiscussionById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      .addCase(toggleUpvote.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(toggleUpvote.fulfilled, (state, action) => {
+        state.loading = false;
+        const { discussionId, upvotes } = action.payload;
+        const discussion = state.discussions.find(
+          (d) => d._id === discussionId
+        );
+        if (discussion) {
+          discussion.upvotes = upvotes;
+        }
+      })
+      .addCase(toggleUpvote.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Error toggling upvote";
+      })
+
+      .addCase(createComment.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createComment.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log("action-", action.payload);
+        const discussion = state.discussions.find(
+          (d) => d._id === action.payload._id
+        );
+
+        console.log("the discussion", discussion);
+        if (discussion) {
+          discussion.comments.push(action.payload);
+        }
+      })
+      .addCase(createComment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Error posting comment";
       });
   },
 });

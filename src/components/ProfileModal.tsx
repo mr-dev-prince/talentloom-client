@@ -1,11 +1,6 @@
 import React from "react";
 import { BiUser } from "react-icons/bi";
-import {
-  FaCalendarAlt,
-  FaPenFancy,
-  FaSignOutAlt,
-  FaUserFriends,
-} from "react-icons/fa";
+import { FaCalendarAlt, FaSignOutAlt } from "react-icons/fa";
 import { MdEdit, MdOutlineEmail } from "react-icons/md";
 import { toggleProfileModal } from "../redux/feature/modal/modalSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -63,16 +58,16 @@ const ProfileModal: React.FC = () => {
           </div>
           <div className="flex items-center gap-3">
             <FaCalendarAlt className="text-gray-600 text-lg" />
-            <span>{user?.dob ? user.dob : "DOB not set"}</span>
+            <p>DOB not set</p>
           </div>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <FaUserFriends className="text-gray-600 text-lg" />
             <span>{user?.followers?.length || 0} Followers</span>
           </div>
           <div className="flex items-center gap-3">
             <FaPenFancy className="text-gray-600 text-lg" />
             <span>{user?.discussions?.length || 0} Discussions Created</span>
-          </div>
+          </div> */}
         </div>
         <div className="mt-auto bg-gray-300 rounded-md p-4">
           <p className="text-sm text-gray-700 italic">

@@ -10,8 +10,6 @@ const CreateDiscussionModal: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const { loading } = useSelector((state: RootState) => state.discussion);
 
-  console.log("users---->", user);
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isPublic, setIsPublic] = useState<boolean>(false);

@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import QuestionBox from "../components/QuestionBox";
+import QuestionBox from "../components/DiscussionBox";
 import OptionsBar from "../components/OptionsBar";
 import type { RootState, AppDispatch } from "../redux/store";
 import { fetchCurrentUser } from "../redux/feature/user/userThunk";
@@ -24,8 +24,8 @@ const Home: React.FC = () => {
   }, [dispatch, token, navigate]);
 
   return (
-    <div className="p-10 px-16 flex justify-center items-start gap-4">
-      <div className="w-[80%] p-1 h-fit">
+    <div className="flex px-16 justify-center items-start gap-4 h-[90vh]">
+      <div className="w-[80%] overflow-y-auto p-1 h-full">
         <QuestionBox />
       </div>
       <div className="w-[20%] p-3 h-[80vh]">

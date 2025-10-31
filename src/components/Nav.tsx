@@ -13,7 +13,7 @@ const Nav: React.FC = () => {
     dispatch(toggleProfileModal());
   };
   return (
-    <div className="flex justify-between items-center p-3 px-16 border-b border-gray-400/50">
+    <div className="flex h-[10vh] justify-between items-center p-3 px-16 border-b border-gray-400/50">
       <div className="flex flex-col justify-center items-end">
         <h1 className="text-3xl font-bold">Talentloom</h1>
         <p className="text-xs font-semibold">Discussion Forum</p>

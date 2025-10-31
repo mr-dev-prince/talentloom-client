@@ -20,7 +20,6 @@ export const modalSlice = createSlice({
     toggleCreateDiscussionModalOpen: (state) => {
       state.createDiscussionModalOpen = !state.createDiscussionModalOpen;
     },
-    // optional: explicitly set modals via payload
     setProfileModal: (state, action: PayloadAction<boolean>) => {
       state.profileModalOpen = action.payload;
     },

@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "./redux/store";
 import ProfileModal from "./components/ProfileModal";
 import Auth from "./pages/Auth";
+import { Toaster } from "react-hot-toast";
 
 const App: React.FC = () => {
   const createDiscussionModalOpen = useSelector(
@@ -20,6 +21,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Nav />
+      <Toaster position="top-right"/>
       {createDiscussionModalOpen && <CreateDiscussionModal />}
       {profileModalOpen && <ProfileModal />}
       <Routes>

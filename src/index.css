@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
 button {
   @apply cursor-pointer;
 }

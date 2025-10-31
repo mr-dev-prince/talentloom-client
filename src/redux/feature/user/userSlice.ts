@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchCurrentUser, loginUser, registerUser } from "./userThunk";
+import type { UserType } from "../../../types/common";
 
 interface UserState {
-  user: any | null;
+  user: UserType | null;
   loading: boolean;
   token: string | null;
   error: string | null;
@@ -33,7 +34,6 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("login payload--->", action.payload);
         state.user = action.payload.user;
         localStorage.setItem("token", action.payload.token);
       })
@@ -62,7 +62,6 @@ const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-        console.log("fetchuser payload--->", action.payload);
         state.user = action.payload;
         state.loading = false;
       })

@@ -5,25 +5,8 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-
-export interface Discussion {
-  _id: string;
-  userId: string;
-  title: string;
-  content: string;
-  upvotes: number;
-  public: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface DiscussionState {
-  discussions: Discussion[];
-  discussion: Discussion | null;
-  loading: boolean;
-  error: string | null;
-  sortBy: "upvotes" | "date";
-}
+import { notifyError, notifySuccess, ROOT_URL } from "../../../utils/common";
+import type { CommentType, DiscussionState } from "../../../types/common";
 
 const initialState: DiscussionState = {
   discussions: [],
@@ -33,8 +16,9 @@ const initialState: DiscussionState = {
   sortBy: "date",
 };
 
+// CREATE_COMMENT thunk
 export const createComment = createAsyncThunk<
-  Comment,
+  CommentType,
   { discussionId: string; content: string },
   { rejectValue: string }
 >(
@@ -43,12 +27,13 @@ export const createComment = createAsyncThunk<
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/comment`,
+        `${ROOT_URL}/comment`,
         { discussionId, content },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      notifySuccess("Comment posted !");
       return res.data.comment;
     } catch (error: any) {
       return rejectWithValue(
@@ -58,6 +43,7 @@ export const createComment = createAsyncThunk<
   }
 );
 
+// TOGGLE_UPVOTE thunk
 export const toggleUpvote = createAsyncThunk<
   { discussionId: string; upvotes: number; hasUpvoted: boolean },
   { discussionId: string },
@@ -66,20 +52,23 @@ export const toggleUpvote = createAsyncThunk<
   try {
     const token = localStorage.getItem("token");
     const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/upvote`,
+      `${ROOT_URL}/upvote`,
       { discussionId },
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+    notifySuccess(res.data.message);
     return res.data;
   } catch (error: any) {
+    notifyError(error.response?.data?.message || "Failed to toggle upvote");
     return rejectWithValue(
       error.response?.data?.message || "Failed to toggle upvote"
     );
   }
 });
 
+// CREATE_DISCUSSION thunk
 export const createDiscussion = createAsyncThunk(
   "discussion/createDiscussion",
   async (
@@ -92,17 +81,17 @@ export const createDiscussion = createAsyncThunk(
   ) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/discussion`,
-        discussionData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.post(`${ROOT_URL}/discussion`, discussionData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      notifySuccess("Discussion created !");
       return res.data;
     } catch (error: any) {
+      notifyError(
+        error.response?.data?.message || "Failed to create discussion"
+      );
       return rejectWithValue(
         error.response?.data?.message || "Failed to create discussion"
       );
@@ -110,11 +99,12 @@ export const createDiscussion = createAsyncThunk(
   }
 );
 
+// GET_DISCUSSIONS thunk
 export const getDiscussions = createAsyncThunk(
   "discussion/getDiscussions",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/discussion`);
+      const res = await axios.get(`${ROOT_URL}/discussion`);
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -124,13 +114,12 @@ export const getDiscussions = createAsyncThunk(
   }
 );
 
+// GET_DISCUSSION_BY_ID thunk
 export const getDiscussionById = createAsyncThunk(
   "discussion/getDiscussionById",
   async (id: string, { rejectWithValue }) => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/discussion/${id}`
-      );
+      const res = await axios.get(`${ROOT_URL}/discussion/${id}`);
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -140,6 +129,7 @@ export const getDiscussionById = createAsyncThunk(
   }
 );
 
+// DISCUSSION SLICE
 const discussionSlice = createSlice({
   name: "discussion",
   initialState,
@@ -160,6 +150,9 @@ const discussionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
+      // createDiscussion cases
+
       .addCase(createDiscussion.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -172,6 +165,8 @@ const discussionSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // getDiscussions cases
 
       .addCase(getDiscussions.pending, (state) => {
         state.loading = true;
@@ -186,6 +181,8 @@ const discussionSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // getDiscussionById cases
+
       .addCase(getDiscussionById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -198,6 +195,8 @@ const discussionSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // upvote cases
 
       .addCase(toggleUpvote.pending, (state) => {
         state.loading = true;
@@ -217,12 +216,13 @@ const discussionSlice = createSlice({
         state.error = action.payload || "Error toggling upvote";
       })
 
+      // comment cases
+
       .addCase(createComment.pending, (state) => {
         state.loading = true;
       })
       .addCase(createComment.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("action-", action.payload);
         const discussion = state.discussions.find(
           (d) => d._id === action.payload._id
         );

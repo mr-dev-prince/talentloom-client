@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -16,25 +17,6 @@ export const loginUser = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Login failed. Try again."
-      );
-    }
-  }
-);
-
-export const fetchCurrentUser = createAsyncThunk(
-  "user/fetchCurrentUser",
-  async (token: string, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/auth/me`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return response.data.user; // or adjust based on your API response
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch user"
       );
     }
   }
@@ -73,6 +55,25 @@ export const registerUser = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Registration failed. Try again."
+      );
+    }
+  }
+);
+
+export const fetchCurrentUser = createAsyncThunk(
+  "user/fetchCurrentUser",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/auth/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return response.data.user;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user"
       );
     }
   }
